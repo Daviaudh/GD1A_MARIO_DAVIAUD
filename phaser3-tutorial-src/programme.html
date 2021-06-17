@@ -51,7 +51,9 @@ var game = new Phaser.Game(config);
 function preload ()
 {
     
-    this.load.image('fond', 'assets/FondV2.jpg');
+    this.load.image('fond', 'assets/premierPlan.png');
+    this.load.image('paralax1', 'assets/secondPlan.png');
+    this.load.image('paralax2', 'assets/troisiemePlan.png');
     this.load.image('sol', 'assets/Sol.png');
     this.load.image('ground', 'assets/platform1.png');
     this.load.image('star', 'assets/cellule.png');
@@ -59,7 +61,7 @@ function preload ()
     this.load.image('ville', 'assets/Ville.png');
     this.load.image('gameOver', 'assets/GameOver.png');
     this.load.image('rapidFire', 'assets/rapidFire.png');
-    this.load.spritesheet('vaisseau', 'assets/SpriteSheet_Vaisseau.png', { frameWidth: 62, frameHeight: 33 });
+    this.load.spritesheet('rush', 'assets/RushSpriteSheet.png', { frameWidth: 107, frameHeight: 90 });
     this.load.spritesheet('meteorite', 'assets/SpriteSheetMeteorite.png', { frameWidth: 71, frameHeight: 72 });
         
     this.iter = 3.14;
@@ -71,7 +73,7 @@ function create ()
     groupeLaser = this.physics.add.group();
    
     //  A simple background for our game
-    this.add.image(1280, 720, 'fond');
+    this.add.image(896, 448, 'fond');
 
     //  The platforms group contains the ground and the 2 ledges we can jump on
     platforms = this.physics.add.staticGroup();
