@@ -52,6 +52,7 @@ function preload ()
     
     this.load.image('robotDash', 'assets/robotDash.png');
     this.load.image('robotJump', 'assets/robotJump.png');
+    this.load.spritesheet('soldier', 'assets/soldierSpriteSheet.png', { frameWidth: 84, frameHeight: 97 });
 
     this.load.image('magnet', 'assets/magnet.png');
     this.load.image('shield', 'assets/shield.png');
@@ -62,7 +63,6 @@ function preload ()
     this.load.image('balle', 'assets/bullet.png');
 
     this.load.spritesheet('player', 'assets/RushSpriteSheet.png', { frameWidth: 107, frameHeight: 90 });
-    this.load.spritesheet('slide', 'assets/SpriteSheetMeteorite.png', { frameWidth: 71, frameHeight: 72 });
         
     this.iter = 3.14;
 }
@@ -103,7 +103,7 @@ function create ()
     //robotDash.create(x,y,'image')
     //robotDash.create(800,200, 'robotDash').setSize(40,130).setOffset(-5,0);
     //robotJump.create(800,200, 'robotJump')
-    soldier.create(400,200, 'robotDash')
+    soldier.create(400,200, 'soldier')
 
     // The player and its settings
     player = this.physics.add.sprite(100, 300, 'player');
