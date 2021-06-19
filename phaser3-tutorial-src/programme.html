@@ -36,7 +36,7 @@ var xAxis=0;
 var yAxis=0;
 
 var player;
-var stars;
+var coin;
 var score = 0;
 var gameOver = false;
 var scoreText;
@@ -51,15 +51,16 @@ function preload ()
     this.load.image('paralax1', 'assets/premierPlan.png');
     
     this.load.spritesheet('robotDash', 'assets/robotDashSpriteSheet.png', { frameWidth: 103, frameHeight: 130 });
-    this.load.spritesheet('robotJump', 'assets/robotJumpSpriteSheet.png');
+    this.load.spritesheet('robotJump', 'assets/robotJumpSpriteSheet.png', { frameWidth: 138, frameHeight: 132 });
     this.load.spritesheet('soldier', 'assets/soldierSpriteSheet.png', { frameWidth: 93, frameHeight: 97 });
 
     this.load.image('magnet', 'assets/magnet.png');
     this.load.image('shield', 'assets/shield.png');
     this.load.image('bullet', 'assets/bullet.png');
+    this.load.image('coin', 'assets/coin.png');
  
 
-    this.load.image('star', 'assets/cellule.png');
+    this.load.image('coin', 'assets/coin.png');
 
     this.load.spritesheet('player', 'assets/RushSpriteSheet.png', { frameWidth: 107, frameHeight: 90 });
         
@@ -88,7 +89,9 @@ function create ()
     robotDash = this.physics.add.group()
     robotJump = this.physics.add.group()
     soldier = this.physics.add.group()
-    
+    coin = this.physics.add.group()
+    magnet = this.physics.add.group()
+
 
     //  The platform
     platforms = this.physics.add.staticGroup();
@@ -100,26 +103,41 @@ function create ()
     
     //robotDash.create(x,y,'image')
     
-    robotDash0 = this.physics.add.sprite(800,350, 'robotDash').setSize(40,130).setOffset(-5,0);
+    robotDash0 = this.physics.add.sprite(850,350, 'robotDash').setSize(40,130).setOffset(-5,0);
     robotDash.add(robotDash0);
-    robotDash1 = this.physics.add.sprite(1000,350, 'robotDash').setSize(40,130).setOffset(-5,0);
+    robotDash1 = this.physics.add.sprite(8000,350, 'robotDash').setSize(40,130).setOffset(-5,0);
     robotDash.add(robotDash1);
-    robotDash2 = this.physics.add.sprite(1500,350, 'robotDash').setSize(40,130).setOffset(-5,0);
+    robotDash2 = this.physics.add.sprite(14000,350, 'robotDash').setSize(40,130).setOffset(-5,0);
     robotDash.add(robotDash2);
-    robotDash3 = this.physics.add.sprite(2000,350, 'robotDash').setSize(40,130).setOffset(-5,0);
+    robotDash3 = this.physics.add.sprite(13000,350, 'robotDash').setSize(40,130).setOffset(-5,0);
     robotDash.add(robotDash3);
-    console.log(robotDash);
-    robotJump.create(800,200, 'robotJump')
+    robotDash4 = this.physics.add.sprite(18000,350, 'robotDash').setSize(40,130).setOffset(-5,0);
+    robotDash.add(robotDash4);
     
+   
     
-    soldier0 = this.physics.add.sprite(800,355, 'soldier');
+    robotJump0 = this.physics.add.sprite(1000,350, 'robotJump');
+    robotJump.add(robotJump0);
+    robotJump1 = this.physics.add.sprite(10000,350, 'robotJump');
+    robotJump.add(robotJump1);
+    robotJump2 = this.physics.add.sprite(6600,350, 'robotJump');
+    robotJump.add(robotJump2);
+    robotJump3 = this.physics.add.sprite(1500,350, 'robotJump');
+    robotJump.add(robotJump3);
+    robotJump4 = this.physics.add.sprite(12200,350, 'robotJump');
+    robotJump.add(robotJump4);
+ 
+ 
+    soldier0 = this.physics.add.sprite(2000,355, 'soldier');
     soldier.add(soldier0);
-    soldier1 = this.physics.add.sprite(900,355, 'soldier');
+    soldier1 = this.physics.add.sprite(11000,355, 'soldier');
     soldier.add(soldier1);
-    soldier2 = this.physics.add.sprite(1000,355, 'soldier');
+    soldier2 = this.physics.add.sprite(7000,355, 'soldier');
     soldier.add(soldier2);
-    soldier3 = this.physics.add.sprite(1200,355, 'soldier');
+    soldier3 = this.physics.add.sprite(2800,355, 'soldier');
     soldier.add(soldier3);
+    soldier4 = this.physics.add.sprite(2800,355, 'soldier');
+    soldier.add(soldier4);
     
     // The player and its settings
     player = this.physics.add.sprite(100, 300, 'player');
@@ -166,19 +184,31 @@ function create ()
 
     });
     
+      this.anims.create({
+        key: 'idleJump',
+       frames: [ { key: 'robotJump', frame: 0 } ],  
+    });
+    
+    this.anims.create({
+        key: 'jump',
+        frames: [ { key: 'robotJump', frame: 1 } ],  
+
+    });
+    
+    
 
     //  Input Events
     cursors = this.input.keyboard.createCursorKeys();
 
-    //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
-    stars = this.physics.add.group({
-        key: 'star',
+    //  Some coins to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
+    coin = this.physics.add.group({
+        key: 'coin',
         repeat: 12,
         setXY: { x: 12, y: 0, stepX: 180 }
     });
-    stars.children.iterate(function (child) {
+    coin.children.iterate(function (child) {
 
-        //  Give each star a slightly different bounce
+        //  Give each coin a slightly different bounce
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
 
     });
@@ -188,13 +218,13 @@ function create ()
 
     //  Collide the player and the stars with the platforms
     this.physics.add.collider(player, platforms);
-    this.physics.add.collider(stars, platforms);
+    this.physics.add.collider(coin, platforms);
     this.physics.add.collider(robotDash, platforms);
     this.physics.add.collider(robotJump, platforms);
     this.physics.add.collider(soldier, platforms);
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-    this.physics.add.overlap(player, stars, collectStar, null, this);
+    this.physics.add.overlap(player, coin, collectCoin, null, this);
 
     this.physics.add.overlap(player, robotDash, hit, null, this);
     this.physics.add.overlap(player, robotJump, hit, null, this);
@@ -259,7 +289,7 @@ function update ()
 
     if (cursors.up.isDown && player.body.touching.down)
     {
-        robotJump.setVelocityY(-800);
+        jumpOnPlayer();
         player.setVelocityY(-730);
     }
     else if (cursors.down.isDown){
@@ -290,37 +320,23 @@ function update ()
 }
  
 
-function collectStar (player, star)
+function collectCoin (player, coin)
 {
-    star.disableBody(true, true);
+    coin.disableBody(true, true);
 
     //  Add and update the score
     score += 10;
     scoreText.setText('Score: ' + score);
 
-    if (stars.countActive(true) === 0)
-    {
-        //  A new batch of stars to collect
-        stars.children.iterate(function (child) {
-
-            child.enableBody(true, child.x, 0, true, true);
-
-        });
-
         var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
-        var meteorite = meteorites.create(x, 16, 'meteorite');
-        meteorite.setBounce(1);
-        meteorite.setCollideWorldBounds(true);
-        meteorite.setVelocity(Phaser.Math.Between(-200, 200), 20);
-        meteorite.allowGravity = false;
     }
-}
+
 //RobotDash dash toward the player
  function rushPlayer(){
      for(let i = 0 ; i<robotDash.children.entries.length; i++){
-         if(player.x < robotDash.children.entries[i].x && player.x > robotDash.children.entries[i].x - 800){    
-         robotDash.children.entries[i].setVelocityX(-400);
+         if(player.x < robotDash.children.entries[i].x && player.x > robotDash.children.entries[i].x - 500){    
+         robotDash.children.entries[i].setVelocityX(-300);
          robotDash.children.entries[i].anims.play('dash');
          }
      }
@@ -328,14 +344,15 @@ function collectStar (player, star)
 }
     
     //RobotDash dash toward the player
- function rushPlayer(){
-     for(let i = 0 ; i<robotDash.children.entries.length; i++){
-         if(player.x < robotDash.children.entries[i].x && player.x > robotDash.children.entries[i].x - 800){    
-         robotDash.children.entries[i].setVelocityX(-400);
-         robotDash.children.entries[i].anims.play('dash');
-         }
-     }
+ function jumpOnPlayer(){
+     for(let i = 0 ; i<robotJump.children.entries.length; i++){
+         if(player.x < robotJump.children.entries[i].x && player.x > robotJump.children.entries[i].x - 400 && robotJump.children.entries[i].body.blocked.down){    
+            
+             robotJump.children.entries[i].setVelocityY(-800);
+              robotJump.children.entries[i].anims.play('jump');
+        }
      
+     }   
 }
    
     
