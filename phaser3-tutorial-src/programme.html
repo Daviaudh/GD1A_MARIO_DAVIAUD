@@ -50,7 +50,7 @@ function preload ()
     this.load.image('paralax2', 'assets/secondPlan.png');
     this.load.image('paralax1', 'assets/premierPlan.png');
     
-    this.load.image('robotDash', 'assets/robotDash.png');
+    this.load.spritesheet('robotDash', 'assets/robotDashSpriteSheet.png', { frameWidth: 103, frameHeight: 130 });
     this.load.image('robotJump', 'assets/robotJump.png');
     this.load.spritesheet('soldier', 'assets/soldierSpriteSheet.png', { frameWidth: 84, frameHeight: 97 });
 
@@ -60,7 +60,6 @@ function preload ()
  
 
     this.load.image('star', 'assets/cellule.png');
-    this.load.image('balle', 'assets/bullet.png');
 
     this.load.spritesheet('player', 'assets/RushSpriteSheet.png', { frameWidth: 107, frameHeight: 90 });
         
@@ -76,7 +75,7 @@ function create ()
    
     groupeLaser = this.physics.add.group();
    
-    //A simple background for our game
+    //add background 
     this.add.image(5000, 200, 'background').setScrollFactor(0.02);
     this.add.tileSprite(5000, 300, 20000, 448, 'paralax3').setScrollFactor(0.02);
     
@@ -94,24 +93,31 @@ function create ()
     //  The platform
     platforms = this.physics.add.staticGroup();
 
-    //  Here we create the ground.
-    //  Scale it to fit the width of the game 
+    //  Add road. 
     platforms.create(5000, 432, 'road');
     platforms.create(10000, 432, 'road');
     platforms.create(15000, 432, 'road');
     
     //robotDash.create(x,y,'image')
-    //robotDash.create(800,200, 'robotDash').setSize(40,130).setOffset(-5,0);
+    
+    robotDash0 = this.physics.add.sprite(800,200, 'robotDash').setSize(40,130).setOffset(-5,0);
+    robotDash.add(robotDash0);
+    robotDash1 = this.physics.add.sprite(1000,200, 'robotDash').setSize(40,130).setOffset(-5,0);
+    robotDash.add(robotDash1);
+    robotDash2 = this.physics.add.sprite(1500,200, 'robotDash').setSize(40,130).setOffset(-5,0);
+    robotDash.add(robotDash2);
+    robotDash3 = this.physics.add.sprite(2000,200, 'robotDash').setSize(40,130).setOffset(-5,0);
+    robotDash.add(robotDash3);
+    console.log(robotDash);
     //robotJump.create(800,200, 'robotJump')
-    soldier.create(400,200, 'soldier')
+    //soldier.create(400,200, 'soldier')
 
     // The player and its settings
     player = this.physics.add.sprite(100, 300, 'player');
 
   
 
-    //  Our player animations, turning, walking left and walking right.
-
+    //  Add animantion
     this.anims.create({
         key: 'right',
         frames: this.anims.generateFrameNumbers('player', { start: 0, end: 7 }),
@@ -124,9 +130,20 @@ function create ()
         frames: [ { key: 'player', frame: 3 } ],
         
     });
+    
     this.anims.create({
         key: 'down',
         frames: [ { key: 'player', frame: 9 } ],
+    });
+    
+    this.anims.create({
+        key: 'idle',
+       frames: [ { key: 'robotDash', frame: 0 } ],
+    });
+    
+    this.anims.create({
+        key: 'dash',
+       frames: [ { key: 'robotDash', frame: 1 } ],  
     });
 
     //  Input Events
@@ -172,11 +189,7 @@ function create ()
 function update ()
 {
     
-    
-   /* if (createMeteorite == true ){
-        createMeteorite = false;
-        spawnMeteorite(this);
-    }*/
+    rushPlayer();
     
     let pad = Phaser.Input.Gamepad.Gamepad;
     
@@ -227,6 +240,7 @@ function update ()
     
     
 }
+ 
     
     function tirer(player) {
         var coefDir;
@@ -266,42 +280,16 @@ function collectStar (player, star)
         meteorite.allowGravity = false;
     }
 }
-
-function hitMeteorite(laser, meteorites) {
-   
-   this.time.addEvent({
-    delay: 800,
-    callback: ()=>{
-       meteorites.destroy();
-    }})
-    
-} 
-   
-    function hitVille(ville, meteorites) {
-        meteorites.anims.play('meteoriteCasse', true);
-        ville.destroy();
-            this.time.addEvent({
-            delay: 800,
-            callback: ()=>{
-            meteorites.destroy();
-            }  
-        })
-} 
-
-/*function spawnMeteorite(test){
-   this.time.addEvent({
-            delay: 800,
-            callback: function(){createMeteorite = true;}
-    })
-    
-    var x = Phaser.Math.Between(100, 2460);
-
-    var meteorite = meteorites.create(x, 16, 'meteorite');
-    meteorite.setBounce(1);
-    meteorite.setCollideWorldBounds(true);
-    meteorite.setVelocity(Phaser.Math.Between(-200, 200), 20);
-    meteorite.allowGravity = false;
-}*/
+//RobotDash dash toward the player
+ function rushPlayer(){
+     for(let i = 0 ; i<robotDash.children.entries.length; i++){
+         if(player.x < robotDash.children.entries[i].x && player.x > robotDash.children.entries[i].x - 800){    
+         robotDash.children.entries[i].setVelocityX(-400);
+         robotDash.children.entries[i].anims.play('dash');
+         }
+     }
+     
+}
 
 function hit (player, bomb)
 {
