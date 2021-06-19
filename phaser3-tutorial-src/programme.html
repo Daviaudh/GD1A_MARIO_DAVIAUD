@@ -107,9 +107,9 @@ function create ()
     robotDash.add(robotDash0);
     robotDash1 = this.physics.add.sprite(8000,350, 'robotDash').setSize(40,130).setOffset(-5,0);
     robotDash.add(robotDash1);
-    robotDash2 = this.physics.add.sprite(14000,350, 'robotDash').setSize(40,130).setOffset(-5,0);
+    robotDash2 = this.physics.add.sprite(13000,350, 'robotDash').setSize(40,130).setOffset(-5,0);
     robotDash.add(robotDash2);
-    robotDash3 = this.physics.add.sprite(13000,350, 'robotDash').setSize(40,130).setOffset(-5,0);
+    robotDash3 = this.physics.add.sprite(14000,350, 'robotDash').setSize(40,130).setOffset(-5,0);
     robotDash.add(robotDash3);
     robotDash4 = this.physics.add.sprite(18000,350, 'robotDash').setSize(40,130).setOffset(-5,0);
     robotDash.add(robotDash4);
@@ -118,25 +118,25 @@ function create ()
     
     robotJump0 = this.physics.add.sprite(1000,350, 'robotJump');
     robotJump.add(robotJump0);
-    robotJump1 = this.physics.add.sprite(10000,350, 'robotJump');
+    robotJump1 = this.physics.add.sprite(1500,350, 'robotJump');
     robotJump.add(robotJump1);
-    robotJump2 = this.physics.add.sprite(6600,350, 'robotJump');
+    robotJump2 = this.physics.add.sprite(6000,350, 'robotJump');
     robotJump.add(robotJump2);
-    robotJump3 = this.physics.add.sprite(1500,350, 'robotJump');
+    robotJump3 = this.physics.add.sprite(12300,350, 'robotJump');
     robotJump.add(robotJump3);
-    robotJump4 = this.physics.add.sprite(12200,350, 'robotJump');
+    robotJump4 = this.physics.add.sprite(15000,350, 'robotJump');
     robotJump.add(robotJump4);
  
  
     soldier0 = this.physics.add.sprite(2000,355, 'soldier');
     soldier.add(soldier0);
-    soldier1 = this.physics.add.sprite(11000,355, 'soldier');
+    soldier1 = this.physics.add.sprite(2800,355, 'soldier');
     soldier.add(soldier1);
     soldier2 = this.physics.add.sprite(7000,355, 'soldier');
     soldier.add(soldier2);
-    soldier3 = this.physics.add.sprite(2800,355, 'soldier');
+    soldier3 = this.physics.add.sprite(11000,355, 'soldier');
     soldier.add(soldier3);
-    soldier4 = this.physics.add.sprite(2800,355, 'soldier');
+    soldier4 = this.physics.add.sprite(14400,355, 'soldier');
     soldier.add(soldier4);
     
     // The player and its settings
@@ -204,7 +204,7 @@ function create ()
     coin = this.physics.add.group({
         key: 'coin',
         repeat: 12,
-        setXY: { x: 12, y: 0, stepX: 180 }
+        setXY: { x: 24, y: 0, stepX: 1000 }
     });
     coin.children.iterate(function (child) {
 
