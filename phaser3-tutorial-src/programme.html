@@ -51,8 +51,8 @@ function preload ()
     this.load.image('paralax1', 'assets/premierPlan.png');
     
     this.load.spritesheet('robotDash', 'assets/robotDashSpriteSheet.png', { frameWidth: 103, frameHeight: 130 });
-    this.load.image('robotJump', 'assets/robotJump.png');
-    this.load.spritesheet('soldier', 'assets/soldierSpriteSheet.png', { frameWidth: 84, frameHeight: 97 });
+    this.load.spritesheet('robotJump', 'assets/robotJumpSpriteSheet.png');
+    this.load.spritesheet('soldier', 'assets/soldierSpriteSheet.png', { frameWidth: 93, frameHeight: 97 });
 
     this.load.image('magnet', 'assets/magnet.png');
     this.load.image('shield', 'assets/shield.png');
@@ -73,7 +73,7 @@ function create ()
 
     this.time.addEvent({delay:3000, repeat: 15, callback: function(){speed += 50}, callbackScope: this})
    
-    groupeLaser = this.physics.add.group();
+    groupBullet = this.physics.add.group();
    
     //add background 
     this.add.image(5000, 200, 'background').setScrollFactor(0.02);
@@ -100,18 +100,27 @@ function create ()
     
     //robotDash.create(x,y,'image')
     
-    robotDash0 = this.physics.add.sprite(800,200, 'robotDash').setSize(40,130).setOffset(-5,0);
+    robotDash0 = this.physics.add.sprite(800,350, 'robotDash').setSize(40,130).setOffset(-5,0);
     robotDash.add(robotDash0);
-    robotDash1 = this.physics.add.sprite(1000,200, 'robotDash').setSize(40,130).setOffset(-5,0);
+    robotDash1 = this.physics.add.sprite(1000,350, 'robotDash').setSize(40,130).setOffset(-5,0);
     robotDash.add(robotDash1);
-    robotDash2 = this.physics.add.sprite(1500,200, 'robotDash').setSize(40,130).setOffset(-5,0);
+    robotDash2 = this.physics.add.sprite(1500,350, 'robotDash').setSize(40,130).setOffset(-5,0);
     robotDash.add(robotDash2);
-    robotDash3 = this.physics.add.sprite(2000,200, 'robotDash').setSize(40,130).setOffset(-5,0);
+    robotDash3 = this.physics.add.sprite(2000,350, 'robotDash').setSize(40,130).setOffset(-5,0);
     robotDash.add(robotDash3);
     console.log(robotDash);
-    //robotJump.create(800,200, 'robotJump')
-    //soldier.create(400,200, 'soldier')
-
+    robotJump.create(800,200, 'robotJump')
+    
+    
+    soldier0 = this.physics.add.sprite(800,355, 'soldier');
+    soldier.add(soldier0);
+    soldier1 = this.physics.add.sprite(900,355, 'soldier');
+    soldier.add(soldier1);
+    soldier2 = this.physics.add.sprite(1000,355, 'soldier');
+    soldier.add(soldier2);
+    soldier3 = this.physics.add.sprite(1200,355, 'soldier');
+    soldier.add(soldier3);
+    
     // The player and its settings
     player = this.physics.add.sprite(100, 300, 'player');
 
@@ -137,7 +146,7 @@ function create ()
     });
     
     this.anims.create({
-        key: 'idle',
+        key: 'idleRobotDash',
        frames: [ { key: 'robotDash', frame: 0 } ],
     });
     
@@ -145,6 +154,18 @@ function create ()
         key: 'dash',
        frames: [ { key: 'robotDash', frame: 1 } ],  
     });
+     
+    this.anims.create({
+        key: 'idleSoldier',
+       frames: [ { key: 'soldier', frame: 0 } ],  
+    });
+    
+    this.anims.create({
+        key: 'shoot',
+        frames: [ { key: 'soldier', frame: 1 } ],  
+
+    });
+    
 
     //  Input Events
     cursors = this.input.keyboard.createCursorKeys();
@@ -189,6 +210,33 @@ function create ()
 function update ()
 {
     
+
+     for(let i = 0 ; i<soldier.children.entries.length; i++){
+         if(player.x < soldier.children.entries[i].x && player.x > soldier.children.entries[i].x - 800 && soldier.children.entries[i].canShoot!=false){ 
+             bullet = this.physics.add.image(soldier.children.entries[i].x,soldier.children.entries[i].y-10, 'bullet');
+             this.physics.add.overlap(player, bullet, hit, null, this);
+             bullet.body.allowGravity=false;
+             bullet.setVelocityX(- 300);
+             soldier.children.entries[i].canShoot=false;
+             this.time.addEvent({
+                 delay: 500, 
+                 callback: ()=>{
+                    soldier.children.entries[i].anims.play('idleSoldier');
+                    this.time.addEvent({
+                        delay: 1500, 
+                        callback: ()=>{
+                            soldier.children.entries[i].canShoot=true;
+                        }
+                    })
+                 }
+             })
+            soldier.children.entries[i].anims.play('shoot');
+             
+                }
+         
+     }
+     
+
     rushPlayer();
     
     let pad = Phaser.Input.Gamepad.Gamepad;
@@ -241,18 +289,6 @@ function update ()
     
 }
  
-    
-    function tirer(player) {
-        var coefDir;
-	    if (player.direction == 'left') { coefDir = -1; } else { coefDir = 1 }
-        // on crée la balle a coté du joueur
-        var laser = groupeLaser.create(player.x + (25 * coefDir), player.y - 4, 'laser');
-        // parametres physiques de la balle.
-        laser.setCollideWorldBounds(false);
-        laser.body.allowGravity =false;
-        laser.setVelocity(1000 * coefDir, 0); // vitesse en x et en y
-    
-}
 
 function collectStar (player, star)
 {
@@ -290,7 +326,21 @@ function collectStar (player, star)
      }
      
 }
-
+    
+    //RobotDash dash toward the player
+ function rushPlayer(){
+     for(let i = 0 ; i<robotDash.children.entries.length; i++){
+         if(player.x < robotDash.children.entries[i].x && player.x > robotDash.children.entries[i].x - 800){    
+         robotDash.children.entries[i].setVelocityX(-400);
+         robotDash.children.entries[i].anims.play('dash');
+         }
+     }
+     
+}
+   
+    
+    
+    
 function hit (player, bomb)
 {
     this.physics.pause();
