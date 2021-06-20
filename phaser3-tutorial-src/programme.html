@@ -40,6 +40,7 @@ var coin;
 var score = 0;
 var gameOver = false;
 var scoreText;
+var shieldOn = false;
 var game = new Phaser.Game(config);
 
 function preload ()
@@ -80,17 +81,17 @@ function create ()
     this.add.image(5000, 200, 'background').setScrollFactor(0.02);
     this.add.tileSprite(5000, 300, 20000, 448, 'paralax3').setScrollFactor(0.02);
     
-    //Add paralax
+    //Add paralax and scrolling speed
     this.add.tileSprite(5000, 303,20000, 448, 'paralax2').setScrollFactor(0.5);
     this.add.tileSprite(5000, 303,28000, 448, 'paralax1').setScrollFactor(0.95);
 
-    //Ennemis
-
+    //Ennemies groups
     robotDash = this.physics.add.group()
     robotJump = this.physics.add.group()
     soldier = this.physics.add.group()
     coin = this.physics.add.group()
     magnet = this.physics.add.group()
+    shield = this.physics.add.group({allowGravity: false,immovable: true})
 
 
     //  The platform
@@ -101,7 +102,7 @@ function create ()
     platforms.create(10000, 432, 'road');
     platforms.create(15000, 432, 'road');
     
-    //robotDash.create(x,y,'image')
+    //Spawn ennemies
     
     robotDash0 = this.physics.add.sprite(850,350, 'robotDash').setSize(40,130).setOffset(-5,0);
     robotDash.add(robotDash0);
@@ -124,20 +125,25 @@ function create ()
     robotJump.add(robotJump2);
     robotJump3 = this.physics.add.sprite(12300,350, 'robotJump');
     robotJump.add(robotJump3);
-    robotJump4 = this.physics.add.sprite(15000,350, 'robotJump');
+    robotJump4 = this.physics.add.sprite(15500,350, 'robotJump');
     robotJump.add(robotJump4);
  
  
-    soldier0 = this.physics.add.sprite(2000,355, 'soldier');
+    soldier0 = this.physics.add.sprite(2000,355, 'soldier').setSize(80,90);
     soldier.add(soldier0);
-    soldier1 = this.physics.add.sprite(2800,355, 'soldier');
+    soldier1 = this.physics.add.sprite(2800,355, 'soldier').setSize(80,90);
     soldier.add(soldier1);
-    soldier2 = this.physics.add.sprite(7000,355, 'soldier');
+    soldier2 = this.physics.add.sprite(7000,355, 'soldier').setSize(80,90);
     soldier.add(soldier2);
-    soldier3 = this.physics.add.sprite(11000,355, 'soldier');
+    soldier3 = this.physics.add.sprite(11000,355, 'soldier').setSize(80,90);
     soldier.add(soldier3);
-    soldier4 = this.physics.add.sprite(14400,355, 'soldier');
+    soldier4 = this.physics.add.sprite(14600,355, 'soldier').setSize(80,90);
     soldier.add(soldier4);
+    
+    shield1 = this.physics.add.image(400,350, 'shield');
+    shield.add(shield1);
+    
+    
     
     // The player and its settings
     player = this.physics.add.sprite(100, 300, 'player');
@@ -204,12 +210,13 @@ function create ()
     coin = this.physics.add.group({
         key: 'coin',
         repeat: 12,
-        setXY: { x: 24, y: 0, stepX: 1000 }
+        setXY: { x: 24, y: 20, stepX: 1000 }
     });
+    
     coin.children.iterate(function (child) {
 
-        //  Give each coin a slightly different bounce
-        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+    //  Give each coin a slightly different bounce
+     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
 
     });
 
@@ -219,17 +226,17 @@ function create ()
     //  Collide the player and the stars with the platforms
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(coin, platforms);
+    this.physics.add.collider(shield, platforms);
     this.physics.add.collider(robotDash, platforms);
     this.physics.add.collider(robotJump, platforms);
     this.physics.add.collider(soldier, platforms);
 
-    //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
+    //  Checks to see if the player overlaps with any of the coin, if he does call the collectCoin function
     this.physics.add.overlap(player, coin, collectCoin, null, this);
-
     this.physics.add.overlap(player, robotDash, hit, null, this);
     this.physics.add.overlap(player, robotJump, hit, null, this);
     this.physics.add.overlap(player, soldier, hit, null, this);
-
+    this.physics.add.overlap(player, shield, collectShield, null, this);
     
     this.cameras.main.setBounds(0, 0, 20000, 448);
     this.cameras.main.setSize(896, 448);
@@ -315,8 +322,7 @@ function update ()
         player.setSize(107, 45).setOffset(0, 45);
     }
     
-    
-    
+        
 }
  
 
@@ -325,9 +331,21 @@ function collectCoin (player, coin)
     coin.disableBody(true, true);
 
     //  Add and update the score
+
     score += 10;
     scoreText.setText('Score: ' + score);
 
+        var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
+
+    }
+    
+    function collectShield (player, shield)
+{
+    shield.disableBody(true, true);
+    //change player color
+    player.setTint(0x17B9F5);
+    shieldOn = true;
+    
         var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
     }
@@ -358,13 +376,24 @@ function collectCoin (player, coin)
     
     
     
-function hit (player, bomb)
-{
-    this.physics.pause();
+function hit (player)
+{ this.immune=false
+    if(shieldOn == true)
+        {
+            this.time.addEvent({ delay : 5000, callback: function(){shieldOn = false}, callbackScope: this});
+            player.setTint();
+            this.ImmuneFrame = this.time.addEvent({ delay : 2000, callback: function(){this.immune = true}, callbackScope: this});
+            this.effect = this.time.addEvent({ delay : 300, repeat: 9, callback: function(){player.visible = !player.visible;}, callbackScope: this});
+            
+            shieldOn=false;
 
+        }
+    else if(shieldOn==false){
+        
     player.setTint(0xff0000);
 
     gameOver = true;
+    }
 }
 
 </script>
