@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <title>Rush</title>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <script src="main.js" type="module"></script>
+
     <style type="text/css">
         body {
             margin: 0;
@@ -206,11 +208,11 @@ function create ()
     //  Input Events
     cursors = this.input.keyboard.createCursorKeys();
 
-    //  Some coins to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
+    //  Some coins to collect
     coin = this.physics.add.group({
         key: 'coin',
-        repeat: 12,
-        setXY: { x: 24, y: 20, stepX: 1000 }
+        repeat: 25,
+        setXY: { x: 40, y: 20, stepX: 500 }
     });
     
     coin.children.iterate(function (child) {
@@ -293,7 +295,6 @@ function update ()
     
     
     
-
     if (cursors.up.isDown && player.body.touching.down)
     {
         jumpOnPlayer();
@@ -395,5 +396,9 @@ function hit (player)
 
 </script>
 
+    
+    
+    
+    
 </body>
 </html>
