@@ -377,19 +377,18 @@ function collectCoin (player, coin)
     
     
 function hit (player)
-{ this.immune=false
+{ 
     if(shieldOn == true)
         {
-            this.time.addEvent({ delay : 5000, callback: function(){shieldOn = false}, callbackScope: this});
-            player.setTint();
-            this.ImmuneFrame = this.time.addEvent({ delay : 2000, callback: function(){this.immune = true}, callbackScope: this});
-            this.effect = this.time.addEvent({ delay : 300, repeat: 9, callback: function(){player.visible = !player.visible;}, callbackScope: this});
-            
+                player.setTint();
+           this.effect = this.time.addEvent({ delay : 200, repeat: 9, callback: function(){player.visible = !player.visible;}, callbackScope: this});
+            this.time.addEvent({ delay : 10000, callback: function(){shieldOn=false}, callbackScope: this});
             shieldOn=false;
 
         }
-    else if(shieldOn==false){
-        
+    else{
+        this.physics.pause();
+
     player.setTint(0xff0000);
 
     gameOver = true;
