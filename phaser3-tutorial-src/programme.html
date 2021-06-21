@@ -340,7 +340,7 @@ function collectCoin (player, coin)
     }
     
     function collectShield (player, shield)
-{
+    {
     shield.disableBody(true, true);
     //change player color
     player.setTint(0x17B9F5);
@@ -365,33 +365,31 @@ function collectCoin (player, coin)
  function jumpOnPlayer(){
      for(let i = 0 ; i<robotJump.children.entries.length; i++){
          if(player.x < robotJump.children.entries[i].x && player.x > robotJump.children.entries[i].x - 400 && robotJump.children.entries[i].body.blocked.down){    
-            
              robotJump.children.entries[i].setVelocityY(-800);
-              robotJump.children.entries[i].anims.play('jump');
+             robotJump.children.entries[i].anims.play('jump');
         }
      
      }   
 }
-   
-    
+
     
     
 function hit (player)
 { 
     if(shieldOn == true)
         {
-                player.setTint();
-           this.effect = this.time.addEvent({ delay : 200, repeat: 9, callback: function(){player.visible = !player.visible;}, callbackScope: this});
-            this.time.addEvent({ delay : 10000, callback: function(){shieldOn=false}, callbackScope: this});
-            shieldOn=false;
+            player.setTint();
+            this.effect = this.time.addEvent({ delay : 200, repeat: 9, callback: function(){player.visible = !player.visible;}, callbackScope: this});
+            this.time.addEvent({ delay : 2000, callback: function(){shieldOn=false}, callbackScope: this});
+            //shieldOn=false;
 
         }
+    
     else{
+        
         this.physics.pause();
-
-    player.setTint(0xff0000);
-
-    gameOver = true;
+        player.setTint(0xff0000);
+        gameOver = true;
     }
 }
 
