@@ -376,15 +376,19 @@ function collectCoin (player, coin)
     
 function hit (player)
 { 
-    if(shieldOn == true)
+    if(this.shield)
         {
             player.setTint();
             this.effect = this.time.addEvent({ delay : 200, repeat: 9, callback: function(){player.visible = !player.visible;}, callbackScope: this});
-            this.time.addEvent({ delay : 2000, callback: function(){shieldOn=false}, callbackScope: this});
-            //shieldOn=false;
+            this.shield = this.time.addEvent({ delay : 2000, callback: function(){shieldOn=false}, callbackScope: this});
+       
 
         }
-    
+    else if (shieldOn == true)
+    {
+        player.setTint()
+        
+    }
     else{
         
         this.physics.pause();
